@@ -5,6 +5,10 @@
   },
   "configuration" : {
     "highlightConfiguration" : { },
+    "indexConfiguration" : {
+      "external" : false,
+      "indexName" : ""
+    },
     "parameterConfiguration" : { },
     "aggregationConfiguration" : { },
     "generalConfiguration" : {
@@ -27,20 +31,24 @@
       "title_i18n" : {
         "en-US" : "Search By Sentence Embedding"
       },
+      "description" : "Enables semantic search for the selected asset types. Only Web Contents, Blogs, Knowledge Base Articles, Message Board Messages and Wiki Pages are currently supported. The vector dimensions have to match the dimensions set in the Search Experiences Sentence Transformer Configuration.",
+      "readOnly" : false,
+      "title" : "Search By Sentence Embedding",
+      "type" : 0,
+      "userName" : "Test Test",
+      "version" : "1.2",
+      "externalReferenceCode" : "9579304a-cf11-f03f-5976-2d82b0a7ec17",
       "description_i18n" : {
         "en-US" : "Enables semantic search for the selected asset types. Only Web Contents, Blogs, Knowledge Base Articles, Message Board Messages and Wiki Pages are currently supported. The vector dimensions have to match the dimensions set in the Search Experiences Sentence Transformer Configuration."
       },
-      "modifiedDate" : "2022-11-30T05:42:20Z",
-      "readOnly" : false,
-      "id" : 101,
-      "type" : 0,
-      "userName" : "Test Test",
-      "version" : "1.1",
-      "createDate" : "2022-11-24T15:32:48Z",
+      "modifiedDate" : "2023-05-10T09:51:24Z",
+      "id" : 201,
+      "createDate" : "2023-05-10T09:46:26Z",
       "elementDefinition" : {
         "uiConfiguration" : {
           "fieldSets" : [ {
             "fields" : [ {
+              "labelLocalized" : "Entry Class Names",
               "defaultValue" : [ {
                 "label" : "com.liferay.blogs.model.BlogsEntry",
                 "value" : "com.liferay.blogs.model.BlogsEntry"
@@ -61,6 +69,7 @@
               "label" : "Entry Class Names",
               "type" : "multiselect"
             }, {
+              "labelLocalized" : "Boost",
               "defaultValue" : 1,
               "name" : "boost",
               "typeOptions" : {
@@ -69,6 +78,7 @@
               "label" : "Boost",
               "type" : "number"
             }, {
+              "labelLocalized" : "Min Score",
               "defaultValue" : 2.4,
               "name" : "min_score",
               "typeOptions" : {
@@ -77,7 +87,9 @@
               "label" : "Min Score",
               "type" : "number"
             }, {
+              "helpTextLocalized" : "Specify the vector function for measuring similarity between the text embeddings of the search keywords and target documents. Check the model's documentation for suitability.",
               "helpText" : "Specify the vector function for measuring similarity between the text embeddings of the search keywords and target documents. Check the model's documentation for suitability.",
+              "labelLocalized" : "Vector Field Function",
               "defaultValue" : "cosineSimilarity",
               "name" : "vector_field_function",
               "typeOptions" : {
@@ -223,7 +235,7 @@
                           }
                         }, {
                           "exists" : {
-                            "field" : "text_embedding_${ml.keyword_vector_dimensions}_${context.language_id}"
+                            "field" : "text_embedding_${ml.text_embeddings.vector_dimensions}_${context.language_id}"
                           }
                         } ]
                       }
@@ -231,9 +243,9 @@
                     "boost" : "${configuration.boost}",
                     "min_score" : "${configuration.min_score}",
                     "script" : {
-                      "source" : "Math.pow((${configuration.vector_field_function}(params.query_vector, 'text_embedding_${ml.keyword_vector_dimensions}_${context.language_id}') + 1), 3)",
+                      "source" : "Math.pow((${configuration.vector_field_function}(params.query_vector, 'text_embedding_${ml.text_embeddings.vector_dimensions}_${context.language_id}') + 1), 3)",
                       "params" : {
-                        "query_vector" : "${ml.keyword_vectors}"
+                        "query_vector" : "${ml.text_embeddings.keywords_embedding}"
                       }
                     }
                   }
@@ -245,8 +257,7 @@
         },
         "icon" : "custom-field",
         "category" : "semantic search"
-      },
-      "externalReferenceCode" : "d6296c6f-c6ff-4b89-2e38-6862dc33e35f"
+      }
     },
     "configurationEntry" : {
       "queryConfiguration" : {
@@ -376,17 +387,17 @@
                       }
                     }, {
                       "exists" : {
-                        "field" : "text_embedding_${ml.keyword_vector_dimensions}_${context.language_id}"
+                        "field" : "text_embedding_${ml.text_embeddings.vector_dimensions}_${context.language_id}"
                       }
                     } ]
                   }
                 },
                 "boost" : 1,
-                "min_score" : 2.4,
+                "min_score" : 2.2,
                 "script" : {
-                  "source" : "Math.pow((dotProduct(params.query_vector, 'text_embedding_${ml.keyword_vector_dimensions}_${context.language_id}') + 1), 3)",
+                  "source" : "Math.pow((dotProduct(params.query_vector, 'text_embedding_${ml.text_embeddings.vector_dimensions}_${context.language_id}') + 1), 3)",
                   "params" : {
-                    "query_vector" : "${ml.keyword_vectors}"
+                    "query_vector" : "${ml.text_embeddings.keywords_embedding}"
                   }
                 }
               }
@@ -415,7 +426,8 @@
       } ],
       "boost" : 1,
       "vector_field_function" : "dotProduct",
-      "min_score" : 2.4
+      "min_score" : 2.2
     }
-  } ]
+  } ],
+  "externalReferenceCode" : "42ce2fb3-c902-5f06-9621-fdcd44cb0074"
 }
