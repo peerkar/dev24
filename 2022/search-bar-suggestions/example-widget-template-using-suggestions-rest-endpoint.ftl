@@ -159,7 +159,7 @@
 </@>
 
 <#assign searchBarPortletInstanceConfiguration = searchBarPortletDisplayContext.getSearchBarPortletInstanceConfiguration() />
-
+	
 <#if searchBarPortletInstanceConfiguration.enableSuggestions() >
 
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -181,7 +181,7 @@
 						headers: {
 							'Accept-Language': themeDisplay.getBCP47LanguageId(),
 							'Content-type': 'application/json',
-							'p_auth': Liferay.authToken
+							'X-csrf-token': Liferay.authToken
 						},
 						type : 'POST'
 					},	        
@@ -209,8 +209,9 @@
 								serviceURL.searchParams.append("currentURL", window.location.href);
 								serviceURL.searchParams.append("destinationFriendlyURL", "${destination}");
 								serviceURL.searchParams.append("groupId", themeDisplay.getScopeGroupId());
+								serviceURL.searchParams.append("keywordsParameterName", "${searchBarPortletDisplayContext.getKeywordsParameterName()}");
 								serviceURL.searchParams.append("plid", themeDisplay.getPlid());
-								serviceURL.searchParams.append("scope", "${searchBarPortletDisplayContext.getScopeParameterValue()}");
+								serviceURL.searchParams.append("scope", "${searchBarPortletDisplayContext.isSelectedEverythingSearchScope()?then('everything', 'this-site')}");
 								serviceURL.searchParams.append("search", currentValue);
 
 								return serviceURL;	    
